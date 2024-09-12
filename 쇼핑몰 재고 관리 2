@@ -1,0 +1,68 @@
+#include <stdio.h>
+
+int main() {
+    int n, id;  
+    int s[100];  
+    int sold[100];  
+    int rem[100];  
+    int total_sold = 0;
+    double total_stock = 0;
+    int max_sold = -1, min_sold = 1000000;
+    int max_id = 0, min_id = 0;
+
+    printf("상품 개수를 입력하세요 (1-100): ");
+    scanf("%d", &n);
+
+    printf("상품별 입고 수량을 입력하세요: ");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &s[i]);
+        total_stock += s[i]; 
+    }
+
+    printf("상품별 판매 수량을 입력하세요: ");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &sold[i]);
+        total_sold += sold[i]; 
+
+        
+        if (sold[i] > max_sold) {
+            max_sold = sold[i];
+            max_id = i + 1;
+        }
+        if (sold[i] < min_sold) {
+            min_sold = sold[i];
+            min_id = i + 1;
+        }
+    }
+
+    
+    for (int i = 0; i < n; i++) {
+        rem[i] = s[i] - sold[i];
+    }
+
+    
+    double rate = (total_sold / total_stock) * 100;
+
+   
+    printf("모든 상품의 재고 수량: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", rem[i]);
+    }
+    printf("\n");
+
+    
+    printf("총 판매량: %d (판매율 %.2f%%)\n", total_sold, rate);
+
+    
+    printf("가장 많이 판매된 상품: ID %d, 판매량 %d\n", max_id, max_sold);
+    printf("가장 적게 판매된 상품: ID %d, 판매량 %d\n", min_id, min_sold);
+
+    
+    for (int i = 0; i < n; i++) {
+        if (rem[i] <= 2) {
+            printf("상품 ID %d: 재고부족(%d)\n", i + 1, rem[i]);
+        }
+    }
+
+    return 0;
+}
