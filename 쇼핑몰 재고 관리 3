@@ -1,0 +1,161 @@
+#include <stdio.h>
+
+#define MAX_PRODUCTS 5
+
+typedef struct {
+    int stock;  
+    int sold;    
+} Product;
+
+void restock(Product products[]);
+void sell(Product products[]);
+void showStatus(Product products[]);
+int getTotalSold(Product products[]);
+int getMostSold(Product products[]);
+int getLeastSold(Product products[]);
+
+int main() {
+    Product products[MAX_PRODUCTS] = {0}; 
+    int menu;
+
+    while (1) {
+        printf("[쇼핑몰 관리 프로그램]\n");
+        printf("> 원하는 메뉴를 선택하세요.(1. 입고, 2. 판매, 3. 상품현황, 4. 종료)\n> ");
+        scanf("%d", &menu);
+
+        switch (menu) {
+            case 1:
+                restock(products);
+                break;
+            case 2:
+                sell(products);
+                break;
+            case 3:
+                showStatus(products);
+                break;
+            case 4:
+                printf("프로그램을 종료합니다.\n");
+                return 0;
+            default:
+                printf("잘못된 입력입니다. 다시 선택해주세요.\n");
+        }
+    }
+    return 0;
+}
+
+void restock(Product products[]) {
+    int choice, amount, id;
+
+    printf("입고수량 입력 : 전체 상품 입고수량 입력 1, 개별 상품 입력 2를 선택\n> ");
+    scanf("%d", &choice);
+
+    if (choice == 1) {
+        
+        for (int i = 0; i < MAX_PRODUCTS; i++) {
+            printf("상품 %d의 입고수량 : ", i + 1);
+            scanf("%d", &amount);
+            products[i].stock += amount;
+        }
+    } else if (choice == 2) {
+       
+        printf("상품ID : ");
+        scanf("%d", &id);
+        if (id >= 1 && id <= MAX_PRODUCTS) {
+            printf("입고수량 : ");
+            scanf("%d", &amount);
+            products[id - 1].stock += amount;
+        } else {
+            printf("잘못된 상품 ID입니다.\n");
+        }
+    } else {
+        printf("잘못된 선택입니다.\n");
+    }
+}
+
+void sell(Product products[]) {
+    int choice, amount, id;
+
+    printf("판매수량 입력 : 전체 상품 판매수량 입력 1, 개별 상품 입력 2를 선택\n> ");
+    scanf("%d", &choice);
+
+    if (choice == 1) {
+ 
+        for (int i = 0; i < MAX_PRODUCTS; i++) {
+            printf("상품 %d의 판매수량 : ", i + 1);
+            scanf("%d", &amount);
+            if (amount <= products[i].stock) {
+                products[i].sold += amount;
+                products[i].stock -= amount;
+            } else {
+                printf("상품 %d의 재고가 부족합니다. (현재 재고: %d)\n", i + 1, products[i].stock);
+            }
+        }
+    } else if (choice == 2) {
+        
+        printf("상품ID : ");
+        scanf("%d", &id);
+        if (id >= 1 && id <= MAX_PRODUCTS) {
+            printf("판매수량 : ");
+            scanf("%d", &amount);
+            if (amount <= products[id - 1].stock) {
+                products[id - 1].sold += amount;
+                products[id - 1].stock -= amount;
+            } else {
+                printf("재고 부족 (현재 재고: %d)\n", products[id - 1].stock);
+            }
+        } else {
+            printf("잘못된 상품 ID입니다.\n");
+        }
+    } else {
+        printf("잘못된 선택입니다.\n");
+    }
+}
+
+void showStatus(Product products[]) {
+    int totalSold = getTotalSold(products);
+    int mostSold = getMostSold(products);
+    int leastSold = getLeastSold(products);
+
+    printf("재고수량 : ");
+    for (int i = 0; i < MAX_PRODUCTS; i++) {
+        printf("%d ", products[i].stock);
+    }
+    printf("\n총 판매량 : %d (판매율 %.2f%%)\n", totalSold, totalSold / (float)(totalSold + getTotalSold(products)) * 100);
+
+    printf("가장 많이 판매된 상품 : ID %d, 판매량 %d\n", mostSold + 1, products[mostSold].sold);
+    printf("가장 적게 판매된 상품 : ID %d, 판매량 %d\n", leastSold + 1, products[leastSold].sold);
+
+    for (int i = 0; i < MAX_PRODUCTS; i++) {
+        if (products[i].stock == 0) {
+            printf("상품 ID %d : 재고부족(%d)\n", i + 1, products[i].stock);
+        }
+    }
+}
+
+int getTotalSold(Product products[]) {
+    int total = 0;
+    for (int i = 0; i < MAX_PRODUCTS; i++) {
+        total += products[i].sold;
+    }
+    return total;
+}
+
+int getMostSold(Product products[]) {
+    int mostSold = 0;
+    for (int i = 1; i < MAX_PRODUCTS; i++) {
+        if (products[i].sold > products[mostSold].sold) {
+            mostSold = i;
+        }
+    }
+    return mostSold;
+}
+
+int getLeastSold(Product products[]) {
+    int leastSold = 0;
+    for (int i = 1; i < MAX_PRODUCTS; i++) {
+        if (products[i].sold < products[leastSold].sold) {
+            leastSold = i;
+        }
+    }
+    return leastSold;
+}
