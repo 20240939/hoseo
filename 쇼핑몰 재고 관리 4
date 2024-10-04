@@ -1,0 +1,133 @@
+#include <stdio.h>
+#include <string.h>
+
+#define NUM_PRODUCTS 5
+#define NAME_LENGTH 30
+
+char product_names[NUM_PRODUCTS][NAME_LENGTH] = {"상품1", "상품2", "상품3", "상품4", "상품5"};
+int stock[NUM_PRODUCTS] = {10, 20, 15, 5, 30};
+int sold[NUM_PRODUCTS] = {0, 0, 0, 0, 0};
+
+void show_menu() {
+    printf("\n[쇼핑몰 관리 프로그램]\n");
+    printf("1. 입고\n");
+    printf("2. 판매\n");
+    printf("3. 상품 현황\n");
+    printf("4. 상품명 변경\n");
+    printf("5. 종료\n");
+    printf("원하는 메뉴를 선택하세요: ");
+}
+
+void restock() {
+    int id, quantity;
+    printf("입고할 상품 번호(1-%d)를 입력하세요: ", NUM_PRODUCTS);
+    scanf("%d", &id);
+    
+
+    if (id < 1 || id > NUM_PRODUCTS) {
+        printf("유효하지 않은 상품 번호입니다.\n");
+        return;
+    }
+    
+    printf("입고 수량을 입력하세요: ");
+    scanf("%d", &quantity);
+
+   
+    if (quantity < 0) {
+        printf("입고 수량은 0 이상이어야 합니다.\n");
+        return;
+    }
+
+    stock[id - 1] += quantity;
+    printf("%s의 새로운 재고는 %d입니다.\n", product_names[id - 1], stock[id - 1]);
+}
+
+
+void sell_product() {
+    int id, quantity;
+    printf("판매할 상품 번호(1-%d)를 입력하세요: ", NUM_PRODUCTS);
+    scanf("%d", &id);
+    
+   
+    if (id < 1 || id > NUM_PRODUCTS) {
+        printf("유효하지 않은 상품 번호입니다.\n");
+        return;
+    }
+
+    printf("판매 수량을 입력하세요: ");
+    scanf("%d", &quantity);
+
+    
+    if (quantity < 0) {
+        printf("판매 수량은 0 이상이어야 합니다.\n");
+        return;
+    }
+    if (stock[id - 1] < quantity) {
+        printf("재고가 부족합니다.\n");
+        return;
+    }
+
+    stock[id - 1] -= quantity;
+    sold[id - 1] += quantity;
+    printf("%s가 %d개 판매되었습니다.\n", product_names[id - 1], quantity);
+}
+
+
+void show_products() {
+    printf("\n상품 현황:\n");
+    for (int i = 0; i < NUM_PRODUCTS; i++) {
+        printf("상품: %s, 재고: %d, 판매량: %d\n", product_names[i], stock[i], sold[i]);
+    }
+}
+
+
+void change_product_name() {
+    int id;
+    char new_name[NAME_LENGTH];
+    printf("이름을 변경할 상품 번호(1-%d)를 입력하세요: ", NUM_PRODUCTS);
+    scanf("%d", &id);
+    
+   
+    if (id < 1 || id > NUM_PRODUCTS) {
+        printf("유효하지 않은 상품 번호입니다.\n");
+        return;
+    }
+
+    printf("새로운 상품명을 입력하세요: ");
+    scanf("%s", new_name);
+
+    
+    strncpy(product_names[id - 1], new_name, NAME_LENGTH - 1);
+    product_names[id - 1][NAME_LENGTH - 1] = '\0';  // 문자열 끝에 null character 추가
+
+    printf("상품 번호 %d의 이름이 %s로 변경되었습니다.\n", id, product_names[id - 1]);
+}
+
+int main() {
+    int choice;
+    while (1) {
+        show_menu();
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                restock();
+                break;
+            case 2:
+                sell_product();
+                break;
+            case 3:
+                show_products();
+                break;
+            case 4:
+                change_product_name();
+                break;
+            case 5:
+                printf("프로그램을 종료합니다.\n");
+                return 0;
+            default:
+                printf("유효하지 않은 선택입니다. 다시 입력하세요.\n");
+        }
+    }
+    return 0;
+}
