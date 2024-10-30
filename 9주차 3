@@ -15,7 +15,7 @@ int main()
     int ch, i;
     FILE* fp;
     
-    if((fp = fopen("output. tet","w")) == NULL){
+    if((fp = fopen("output. tet","w")) == NULL){ //파일을 w문으로 열기
         printf("error..");
         return 0;
     }
@@ -26,7 +26,7 @@ int main()
         fputs("\n",fp); //입력된 파일 띄어쓰기
     }
     
-    fclose(fp);
+    fclose(fp); //파일 닫기
 
     return 0;
 }
