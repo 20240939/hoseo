@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <time.h>
+
+int main() {
+    int year, month, day;
+    struct tm input_date = {0};
+    struct tm *current_time;
+    time_t current, target;
+    double diff;
+
+    
+    current = time(NULL);
+    current_time = localtime(&current);
+
+    printf("D-Day 날짜를 입력하세요 (YYYY MM DD): ");
+    scanf("%d %d %d", &year, &month, &day);
+
+   
+    input_date.tm_year = year - 1900; 
+    input_date.tm_mon = month - 1;   
+    input_date.tm_mday = day;
+
+    
+    target = mktime(&input_date);
+
+    if (target == -1) {
+        printf("유효하지 않은 날짜입니다.\n");
+        return 1;
+    }
+
+    
+    diff = difftime(target, current);
+
+    
+    int dday = (int)(diff / (60 * 60 * 24)); 
+
+    if (dday > 0) {
+        printf("D-%d\n", dday);
+    } else if (dday == 0) {
+        printf("D-Day입니다!\n");
+    } else {
+        printf("D+%d\n", -dday);
+    }
+
+    return 0;
+}
